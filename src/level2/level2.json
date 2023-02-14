@@ -1,0 +1,11 @@
+{
+    "Order": {
+        "Drink": "Coffee",
+        "Size": "Medium",
+        "Milk": "Soy",
+        "ExtraShot": "true"
+    },
+    "Member": {
+        "Premium": "true"
+    }
+}
