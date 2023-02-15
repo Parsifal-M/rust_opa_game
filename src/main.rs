@@ -1,7 +1,7 @@
 extern crate termion;
 
 use std::io::{ self, stdout, Write };
-use termion::{ input::TermRead, event::Key, raw::IntoRawMode, clear, cursor };
+use termion::{ input::TermRead, event::Key, clear, cursor };
 
 mod level1;
 mod level2;
@@ -17,7 +17,7 @@ fn main() {
     for key in reader {
         match key.unwrap() {
             Key::Char('1') => {
-                let stdout = stdout().into_raw_mode().unwrap();
+                let stdout = stdout();
                 drop(stdout);
 
                 let level_modules = vec![
