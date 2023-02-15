@@ -1,5 +1,4 @@
 extern crate termion;
-extern crate textwrap;
 
 use std::fs;
 use std::io;
@@ -10,11 +9,10 @@ use termion::clear;
 use termion::cursor;
 
 pub fn run() -> Result<bool, String> {
-    println!("It's the year 3000, you are the latest and greatest robot barista. In the year 3000 all orders are fed to you through a JSON file, its then up to you if the order is valid or not. Luckily you've been modded to be able to use OPA (Open Policy Agent) which will help you set some rules.");
-    println!("Press Enter if you are ready!");
-    let mut input = String::new();
 
-    io::stdin().read_line(&mut input).expect("Failed to read line");
+    println!("Someone has come in to get a Coffee and has asked for an extra shot of esspresso! You ask him for his Premium Membership card and he does not have one...
+    It states very clearly on the door, that is only open to Premium Members.");
+    
     // Clear the terminal and move the cursor to the top-left corner
     print!("{}{}", clear::All, cursor::Goto(1, 1));
     // Flush the output buffer to ensure that the terminal is cleared
@@ -22,28 +20,17 @@ pub fn run() -> Result<bool, String> {
 
     loop {
 
-        // Clear the screen and move the cursor to the top-left corner
-        print!("{}{}", clear::All, cursor::Goto(1, 1));
-        // Flush the output buffer to ensure that the terminal is cleared
-        io::stdout().flush().unwrap();
-
-        println!(
-            "As the proud employee of a specialty coffee shop, you can't believe your robot ears when a customer walks in and asks for a cola, completely disregarding the carefully crafted menu of premium coffee offerings."
-        );
-        println!("Level 1 Order (level1.json):");
-
-        let file_contents = fs
-            ::read_to_string("src/level1/level1.json")
-            .expect("Failed to read level1.json");
+        println!("Level 2 Order (level2.json):");
+        let file_contents = fs::read_to_string("src/level2/level2.json").expect("Failed to read level2.json");
 
         let output = Command::new("opa")
             .arg("eval")
             .arg("--format")
             .arg("pretty")
             .arg("--data")
-            .arg("src/level1/level1.rego")
+            .arg("src/level2/level2.rego")
             .arg("--input")
-            .arg("src/level1/level1.json")
+            .arg("src/level2/level2.json")
             .arg("data.barista")
             .output()
             .expect("Failed to execute opa command");
@@ -70,9 +57,11 @@ pub fn run() -> Result<bool, String> {
         println!("{}", termion::color::Fg(termion::color::Reset));
 
         if stdout.contains("Unfortunately, we do not serve Cola") {
+            println!("Well done! You did it!");
             return Ok(true);
         } else {
-            println!("Hmmm... something doesn't seem right. Try again?");
+
+            println!("What would you like to do?");
             println!("1. Retry");
             println!("2. Exit");
 
@@ -80,10 +69,8 @@ pub fn run() -> Result<bool, String> {
             io::stdin().read_line(&mut input).expect("Failed to read line");
 
             match input.trim() {
-                "1" => {}
-                "2" => {
-                    return Ok(false);
-                }
+                "1" => {},
+                "2" => return Ok(false),
                 _ => {}
             }
         }
