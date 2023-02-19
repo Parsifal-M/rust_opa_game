@@ -29,6 +29,27 @@ Do you want to play the OPA Game?
 
 You can choose one of the options by typing the corresponding number and pressing Enter. If you choose option 1, the tool will display a message indicating that the game is starting. If you choose option 2, the tool will display a message indicating that you have exited the game.
 
+# How Does It Work?
+
+Very simple really. The OPA Game CLI tool is a Rust program that uses the command line to fire off OPA commands like:
+
+```rust
+        let output = Command::new("opa")
+            .arg("eval")
+            .arg("--format")
+            .arg("pretty")
+            .arg("--data")
+            .arg("src/level2/level2.rego")
+            .arg("--input")
+            .arg("src/level2/level2.json")
+            .arg("data.barista")
+            .output()
+            .expect("Failed to execute opa command");
+```
+
+
+ The game is designed to be a fun way to learn about policy making. The game is a CLI-style game that includes increasingly difficult levels as the user progresses through the game.
+
 # License
 The OPA Game CLI tool is licensed under the Apache 2.0 license. For more details, see the LICENSE file.
 

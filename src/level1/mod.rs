@@ -6,11 +6,17 @@ use std::io;
 use std::io::Write;
 use std::process::Command;
 
+
+use std::time::{Instant};
+
 use termion::clear;
 use termion::cursor;
 
 pub fn run() -> Result<bool, String> {
-    println!("It's the year 3000, you are the latest and greatest robot barista. In the year 3000 all orders are fed to you through a JSON file, its then up to you if the order is valid or not. Luckily you've been modded to be able to use OPA (Open Policy Agent) which will help you set some rules.");
+    let start_time = Instant::now(); // Start the timer
+    println!(
+        "It's the year 3000, you are the latest and greatest robot barista. In the year 3000 all orders are fed to you through a JSON file, its then up to you if the order is valid or not. Luckily you've been modded to be able to use OPA (Open Policy Agent) which will help you set some rules."
+    );
     println!("Press Enter if you are ready!");
     let mut input = String::new();
 
@@ -21,7 +27,6 @@ pub fn run() -> Result<bool, String> {
     io::stdout().flush().unwrap();
 
     loop {
-
         // Clear the screen and move the cursor to the top-left corner
         print!("{}{}", clear::All, cursor::Goto(1, 1));
         // Flush the output buffer to ensure that the terminal is cleared
@@ -30,7 +35,6 @@ pub fn run() -> Result<bool, String> {
         println!(
             "As the proud employee of a specialty coffee shop, you can't believe your robot ears when a customer walks in and asks for a cola, completely disregarding the carefully crafted menu of premium coffee offerings."
         );
-        println!("Level 1 Order (level1.json):");
 
         let file_contents = fs
             ::read_to_string("src/level1/level1.json")
@@ -49,27 +53,39 @@ pub fn run() -> Result<bool, String> {
             .expect("Failed to execute opa command");
 
         // convert stdout from bytes to string
+        // convert stdout from bytes to string
         let stdout = String::from_utf8_lossy(&output.stdout);
+
+        // Calculate the maximum width for the boxes
+        let max_width =
+            file_contents
+                .lines()
+                .chain(stdout.lines())
+                .map(|line| line.len())
+                .max()
+                .unwrap_or(0) + 4; // Add 4 for the border
 
         // Print a border around the JSON output
         println!("{}", termion::color::Fg(termion::color::Green));
-        println!("┌{}┐", "─".repeat(56));
+        println!("┌{}┐", "─".repeat(max_width - 2));
         for line in file_contents.lines() {
-            println!("│ {: <54} │", line);
+            println!("│ {: <width$} │", line, width = max_width - 4);
         }
-        println!("└{}┘", "─".repeat(56));
+        println!("└{}┘", "─".repeat(max_width - 2));
         println!("{}", termion::color::Fg(termion::color::Reset));
 
         // Print a border around the rego output
         println!("{}", termion::color::Fg(termion::color::Red));
-        println!("┌{}┐", "─".repeat(56));
+        println!("┌{}┐", "─".repeat(max_width - 2));
         for line in stdout.lines() {
-            println!("│ {: <54} │", line);
+            println!("│ {: <width$} │", line, width = max_width - 4);
         }
-        println!("└{}┘", "─".repeat(56));
+        println!("└{}┘", "─".repeat(max_width - 2));
         println!("{}", termion::color::Fg(termion::color::Reset));
 
         if stdout.contains("Unfortunately, we do not serve Cola") {
+            let elapsed_time = start_time.elapsed(); // Get elapsed time since timer started
+            println!("Elapsed time: {:?}", elapsed_time); // Print the elapsed time
             return Ok(true);
         } else {
             println!("Hmmm... something doesn't seem right. Try again?");

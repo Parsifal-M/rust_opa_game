@@ -1,7 +1,7 @@
 extern crate termion;
-
-use std::io::{ self, stdout, Write };
-use termion::{ input::TermRead, event::Key, clear, cursor };
+use std::io::{self, stdout, Write};
+use termion::{clear, cursor, event::Key, input::TermRead};
+use std::time::{Instant};
 
 mod level1;
 mod level2;
@@ -22,15 +22,20 @@ fn main() {
 
                 let level_modules = vec![
                     level1::run as fn() -> Result<bool, String>,
-                    level2::run as fn() -> Result<bool, String>
+                    level2::run as fn() -> Result<bool, String>,
                     /* ... add more levels here ... */
                 ];
 
                 let mut level = 0;
+                let mut elapsed_times = Vec::new();
                 loop {
                     if level == level_modules.len() {
                         println!("Congratulations! You passed all levels.");
-                        break;
+                        println!("Level Times:");
+                        for (index, time) in elapsed_times.iter().enumerate() {
+                            println!("Level {}: {:?}", index+1, time);
+                        }
+                        return;
                     }
 
                     let module = level_modules[level];
@@ -38,12 +43,16 @@ fn main() {
                     print!("{}{}", clear::All, cursor::Goto(1, 1));
                     // Flush the output buffer to ensure that the terminal is cleared
                     io::stdout().flush().unwrap();
+
+                    let start_time = Instant::now();
                     match module() {
                         Ok(true) => {
+                            let elapsed_time = start_time.elapsed();
+                            elapsed_times.push(elapsed_time);
                             println!("Congratulations! You passed level {}.", level + 1);
 
                             println!("What would you like to do?");
-                            
+
                             println!("1. Continue to the next level");
                             println!("2. Exit");
 
@@ -66,6 +75,8 @@ fn main() {
                             }
                         }
                         Ok(false) => {
+                            let elapsed_time = start_time.elapsed();
+                            elapsed_times.push(elapsed_time);
                             println!("Quitting at level {}.", level + 1);
 
                             println!("Thanks for playing!");
