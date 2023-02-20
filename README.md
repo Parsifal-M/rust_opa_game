@@ -4,16 +4,9 @@ The OPA Game CLI is a command-line interface (CLI) tool written in Rust that all
 # Installation
 To use the OPA Game CLI tool, you must have Rust installed on your system. If Rust is not yet installed, download and install it from the official Rust website: https://www.rust-lang.org/tools/install
 
-Once Rust is installed, clone this repository and navigate to the project directory:
-
-```sh
-git clone https://github.com/your-username/opa-game-cli.git
-cd opa-game-cli
-```
-
 # Usage
 
-To run the OPA Game CLI tool, use the following command:
+To run the OPA Game CLI tool, use the following command once you are inside the directory:
 
 ```sh
 cargo run
