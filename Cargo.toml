@@ -2,6 +2,7 @@
 name = "opa-game-cli"
 version = "0.1.0"
 authors = ["Peter Macdonald <macdonald.peter90@gmail.com>"]
+edition = '2021'
 
 [dependencies]
 termion = "2.0.1"
