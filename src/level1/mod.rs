@@ -1,8 +1,11 @@
+extern crate termion;
+extern crate textwrap;
+
 use std::fs;
 use std::io;
 use std::io::Write;
 use std::process::Command;
-use textwrap::fill;
+
 
 use std::time::{Instant};
 
@@ -11,13 +14,12 @@ use termion::cursor;
 
 pub fn run() -> Result<bool, String> {
     let start_time = Instant::now(); // Start the timer
-    let text = "It's the year 3000, you are the latest and greatest robot barista. In the year 3000 all orders are fed to you through a JSON file, its then up to you if the order is valid or not. Luckily you've been modded to be able to use OPA (Open Policy Agent) which will help you set some rules.";
-    println!("{}", fill(text, 80)); // Assuming 80 characters per line as the max width
-    
-    let start_text: &str = "Press Enter if you are ready!";
-    println!("{}", fill(start_text, 80));
+    println!(
+        "It's the year 3000, you are the latest and greatest robot barista. In the year 3000 all orders are fed to you through a JSON file, its then up to you if the order is valid or not. Luckily you've been modded to be able to use OPA (Open Policy Agent) which will help you set some rules."
+    );
+    println!("Press Enter if you are ready!");
+    let mut input = String::new();
 
-    let mut input = String::new(); // Add this line to declare `input` variable
     io::stdin().read_line(&mut input).expect("Failed to read line");
     // Clear the terminal and move the cursor to the top-left corner
     print!("{}{}", clear::All, cursor::Goto(1, 1));
