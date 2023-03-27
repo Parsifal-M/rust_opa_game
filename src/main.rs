@@ -1,3 +1,4 @@
+extern crate termion;
 use std::io::{self, stdout, Write};
 use termion::{clear, cursor, event::Key, input::TermRead};
 use std::time::{Instant};
@@ -16,7 +17,8 @@ fn main() {
     for key in reader {
         match key.unwrap() {
             Key::Char('1') => {
-                stdout().lock().flush().unwrap();
+                let stdout = stdout();
+                drop(stdout);
 
                 let level_modules = vec![
                     level1::run as fn() -> Result<bool, String>,
